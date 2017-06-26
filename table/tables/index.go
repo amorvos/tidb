@@ -131,6 +131,13 @@ func (c *index) GenIndexKey(indexedValues []types.Datum, h int64) (key []byte, d
 		}
 	}
 
+	for i, column := range c.idxInfo.Columns {
+		if column.Order {
+			codec.ReverseComparableDatum(&indexedValues[i])
+			break
+		}
+	}
+
 	// For string columns, indexes can be created that use only the leading part of column values,
 	// using col_name(length) syntax to specify an index prefix length.
 	for i := 0; i < len(indexedValues); i++ {
